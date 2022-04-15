@@ -40,7 +40,8 @@ def gen_json_data():
                 if str(idx) in index_group_dict:
                     idx = index_group_dict[str(idx)]
                 value_order = feature_value_order_dict[str(idx)]
-                vs[idx] = value_order[val]
+                if val in value_order:
+                    vs[idx] = value_order[val]
             patient_time_record_dict[patient][time].update(vs)
 
     new_d = dict()

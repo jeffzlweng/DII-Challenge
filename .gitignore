@@ -107,7 +107,6 @@ venv.bak/
 
 
 tmp.*
-result/
 result.*/
 .idea/
 data/

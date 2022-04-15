@@ -19,7 +19,7 @@ The early identification of sepsis cases.
 		python gen_master_feature.py --master-file ../file/master.csv
 		python gen_feature_time.py --vital-file ../file/vital.csv				# only for task1
 		python gen_vital_feature.py --vital-file ../file/vital.csv
-		python gen_label_feature.py --label-file ../file/label.csv
+		python gen_label.py --label-file ../file/label.csv
 
 #	train and validate the model, the best model will saved in ../data/models/
 		
