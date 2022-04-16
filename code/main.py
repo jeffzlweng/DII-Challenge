@@ -65,14 +65,17 @@ def train_eval(p_dict, phase='train'):
     for i,data in enumerate(tqdm(data_loader)):
         if args.use_visit:
             if args.gpu:
-                data = [ Variable(x.cuda()) for x in data ]
+                # data = [ Variable(x.cuda()) for x in data ]
+                data = [ Variable(x) for x in data ]
             visits, values, mask, master, labels, times, trends  = data
             if i == 0:
                 print 'input size', visits.size()
             output = model(visits, master, mask, times, phase, values, trends)
         else:
-            inputs = Variable(data[0].cuda())
-            labels = Variable(data[1].cuda())
+            # inputs = Variable(data[0].cuda())
+            # labels = Variable(data[1].cuda())
+            inputs = Variable(data[0])
+            labels = Variable(data[1])
             output = model(inputs)
 
         # if 0:
@@ -202,11 +205,12 @@ def main():
 
     cudnn.benchmark = True
     net = lstm.LSTM(args)
-    if args.gpu:
-        net = net.cuda()
-        p_dict['loss'] = loss.Loss().cuda()
-    else:
-        p_dict['loss'] = loss.Loss()
+    # if args.gpu:
+    #     net = net.cuda()
+    #     p_dict['loss'] = loss.Loss().cuda()
+    # else:
+    #    p_dict['loss'] = loss.Loss()
+    p_dict['loss'] = loss.Loss()
 
     parameters = []
     for p in net.parameters():
