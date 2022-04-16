@@ -2,4 +2,5 @@ tqdm
 torch
 torchvision
 sklearn
-
+matplotlib
+scikit-image
