@@ -204,6 +204,7 @@ def main():
 
 
     cudnn.benchmark = True
+    print(args)
     net = lstm.LSTM(args)
     # if args.gpu:
     #     net = net.cuda()
