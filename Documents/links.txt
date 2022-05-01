@@ -4,3 +4,45 @@ https://www.overleaf.com/project/6252d6c417bd3f31d74e53b7
 
 https://docs.google.com/document/d/1IUbu_L-N6miMLQ49VPpBAYf3xb_zTnEoCUKHgRY-3bc/edit
 
+https://github.com/jeffzlweng/DII-Challenge
+
+TODO:
+
+I: Report
+1. Scope of reproducibility : 2 use_cases. need more info....
+
+2. Dataset Description: remove minor details. explain the source,
+
+3. Methodology  Computational requirements
+    - type of hardware,
+    - avg runtime for each epoch,
+    - total number of trial,
+    - GPU hrs used,
+    - # training epochs
+
+4. Results: use table. and plot. ?
+
+
+5: Discussion:
+     - Implications of the experimental results, whether the original paper was reproducible, and if it wasn’t,
+     what factors made it irreproducible
+     - dataset is different from what paper suggested.
+     - what was easy?   code is relatively clean, need some upgrade. minor changes.
+         data set is already in the repo. we already have code to clean the data.
+         console intermediate output is high quality, pipeline is good.
+     - what was hard?
+         ....................
+     -  Recommendations to the original authors or others who work in this area for improving reproducibility
+
+6. Extra credit:  send an email to the author. ask about the missing data.
+
+II: Presentation: 4 minute, PPT, upload to Youtube.
+    - Software: camtasia9
+
+
+III: Code.
+改ReadMe.
+  - python 3 branch.
+  -missing key.
+  - get rid of the GPU code.
+  - plot?? maybe.
