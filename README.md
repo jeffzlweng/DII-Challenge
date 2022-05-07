@@ -7,7 +7,7 @@ The early identification of sepsis cases.
 
 # data preprocessing
 
--	creat result folder for data preprocessing results
+	creat result folder for data preprocessing results
 
 		mkdir result
 		mkdir data
