@@ -1,19 +1,33 @@
-# DII-Challenge-2019
-The early identification of sepsis cases.
+# Reproducibility Project Instructions for CS598 DL4H in Spring 2022
 
-# build the env
+## Citation to the original paper
+
+Zhang, D., Yin, C., Hunold, K.M., Jiang, X., Caterino, J.M. and Zhang, P., 2021.
+An interpretable deep-learning model for early prediction of sepsis in the emergency department. Patterns, 2(2), p.100196.
+
+## Link to the original paper’s repo
+
+https://github.com/yinchangchang/DII-Challenge
+
+
+## Dependencies
+-	use below instruction to install all the dependencies for this project
 	
 		pip install -r requirement.txt
 
-# data preprocessing
+## Data download instruction
+-	Data are in the below folder
+		
+		./file/...
+## Preprocessing code + command
 
--	creat result folder for data preprocessing results
+-	command to creat result folder for data preprocessing results
 
 		mkdir result
 		mkdir data
 		mkdir data/models
 
--	generate json files 
+-	command to generate json files 
 
 		cd preprocessing
 		python gen_master_feature.py --master-file ../file/master.csv
@@ -21,14 +35,43 @@ The early identification of sepsis cases.
 		python gen_vital_feature.py --vital-file ../file/vital.csv
 		python gen_label.py --label-file ../file/label.csv
 
-#	train and validate the model, the best model will saved in ../data/models/
+## Training + Evaluation command
+-	the best model will saved in ../data/models/
 		
-		python main.py --task case1		# for task1 case1
-		python main.py --task task1		# for task1 case2
-		python main.py --task task2		# for task2
+		python main.py --task task1		# for case1
+		python main.py --task task2		# for case2
 
 #	You can also run the code by:
 
 		python run.py --label-file ../file/label.csv --vital-file ../file/vital.csv --master-file  ../master.csv --task case1
 
+
+## Pretrained model
+-       the pretrained model are in the below location
+       		
+		/data/models/
+
+## Table of results
+
+### Case 1
+	
+|     Metric    |    Value      |
+| ------------- | ------------- |
+|      AUC      |     0.988     |
+|      F1       |     0.941     |
+|    Accuracy   |     0.944     |
+|    Recall     |     1.000     |
+|    Precision  |     0.888     |
+		
+### Case 2
+
+|     Metric    |    Value      |
+| ------------- | ------------- |
+|      AUC      |     0.931     |
+|      F1       |     0.758     |
+|    Accuracy   |     0.723     |
+|    Recall     |     0.950     |
+|    Precision  |     0.631     |
+		
+		
 
