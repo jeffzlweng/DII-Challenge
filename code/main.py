@@ -13,6 +13,7 @@ import time
 import json
 import traceback
 import numpy as np
+import pandas as pd
 from glob import glob
 from tqdm import tqdm
 from tools import parse, py_op
@@ -69,7 +70,7 @@ def train_eval(p_dict, phase='train'):
                 data = [ Variable(x) for x in data ]
             visits, values, mask, master, labels, times, trends  = data
             if i == 0:
-                print 'input size', visits.size()
+                print(('input size', visits.size()))
             output = model(visits, master, mask, times, phase, values, trends)
         else:
             # inputs = Variable(data[0].cuda())
@@ -105,13 +106,14 @@ def train_eval(p_dict, phase='train'):
         #     break
 
 
-    print('\nEpoch: {:d} \t Phase: {:s} \n'.format(epoch, phase))
-    metric = function.print_metric('classification', classification_metric_dict, phase)
+    print(('\nEpoch: {:d} \t Phase: {:s} \n'.format(epoch, phase)))
+    results = function.print_metric('classification', classification_metric_dict, phase)
+    metric = results['f1score'] if (phase == 'train') else results['auc']
     if args.phase != 'train':
-        print 'metric = ', metric
-        print
-        print
-        return
+        print(('metric=', metric))
+        print()
+        print()
+        return results
     if phase == 'val':
         if metric > p_dict['best_metric'][0]:
             p_dict['best_metric'] = [metric, epoch]
@@ -136,10 +138,12 @@ def train_eval(p_dict, phase='train'):
                     fr.write(str(p) + '\n')
 
 
-        print('valid: metric: {:3.4f}\t epoch: {:d}\n'.format(metric, epoch))
-        print('\t\t\t valid: best_metric: {:3.4f}\t epoch: {:d}\n'.format(p_dict['best_metric'][0], p_dict['best_metric'][1]))  
+        print(('valid: metric: {:3.4f}\t epoch: {:d}\n'.format(metric, epoch)))
+        print(('\t\t\t valid: best_metric: {:3.4f}\t epoch: {:d}\n'.format(p_dict['best_metric'][0], p_dict['best_metric'][1])))  
+        return results
     else:
-        print('train: metric: {:3.4f}\t epoch: {:d}\n'.format(metric, epoch))
+        print(('train: metric: {:3.4f}\t epoch: {:d}\n'.format(metric, epoch)))
+        return results
 
 
 
@@ -148,10 +152,10 @@ def main():
     p_dict['args'] = args
     args.split_nn = args.split_num + args.split_nor * 3
     args.vocab_size = args.split_nn * 145 + 1
-    print 'vocab_size', args.vocab_size
+    print(('vocab_size', args.vocab_size))
 
     ### load data
-    print 'read data ...'
+    print('read data ...')
     patient_time_record_dict = py_op.myreadjson(os.path.join(args.result_dir, 'patient_time_record_dict.json'))
     patient_master_dict = py_op.myreadjson(os.path.join(args.result_dir, 'patient_master_dict.json'))
     patient_label_dict = py_op.myreadjson(os.path.join(args.result_dir, 'patient_label_dict.json'))
@@ -159,18 +163,15 @@ def main():
     patient_train = list(json.load(open(os.path.join(args.file_dir, args.task, 'train.json'))))
     patient_valid = list(json.load(open(os.path.join(args.file_dir, args.task, 'val.json')))) 
 
+    # patients = list(patient_time_record_dict.keys()) if len(patient_train) > len(patient_label_dict) else list(patient_label_dict.keys())
     if len(patient_train) > len(patient_label_dict):
-        patients = patient_time_record_dict.keys()
-        patients = patient_label_dict.keys()
+        patients = list(patient_time_record_dict.keys())
+        patients = list(patient_label_dict.keys())
         n = int(0.8 * len(patients))
         patient_train = patients[:n]
         patient_valid = patients[n:]
 
-
-
-
-
-    print 'data loading ...'
+    print('data loading ...')
     train_dataset  = dataloader.DataSet(
                 patient_train, 
                 patient_time_record_dict,
@@ -204,7 +205,6 @@ def main():
 
 
     cudnn.benchmark = True
-    print(args)
     net = lstm.LSTM(args)
     # if args.gpu:
     #     net = net.cuda()
@@ -225,25 +225,38 @@ def main():
 
     p_dict['epoch'] = 0
     p_dict['best_metric'] = [0, 0]
+    p_dict['results'] = {}
 
 
     ### resume pretrained model
     if os.path.exists(args.resume):
-        print 'resume from model ' + args.resume
+        print(('resume from model ' + args.resume))
         function.load_model(p_dict, args.resume)
-        print 'best_metric', p_dict['best_metric']
+        print(('best_metric', p_dict['best_metric']))
         # return
 
 
     if args.phase == 'train':
-
         best_f1score = 0
         for epoch in range(p_dict['epoch'] + 1, args.epochs):
             p_dict['epoch'] = epoch
             for param_group in optimizer.param_groups:
                 param_group['lr'] = args.lr
             train_eval(p_dict, 'train')
-            train_eval(p_dict, 'val')
+            results = train_eval(p_dict, 'val')
+            p_dict['results']['epoch{0}'.format(epoch)] = results
+    elif args.phase == 'val':
+        best_f1score = 0
+        for epoch in range(p_dict['epoch'] + 1, args.epochs):
+            p_dict['epoch'] = epoch
+            for param_group in optimizer.param_groups:
+                param_group['lr'] = args.lr
+            results = train_eval(p_dict, 'val')
+            p_dict['results']['epoch{0}'.format(epoch)] = results
+        
+    result_df = pd.DataFrame(p_dict['results']).T
+    result_df.to_csv(os.path.join(args.result_dir, '{}_results.csv'.format(args.task)))
+
 
 
 if __name__ == '__main__':
