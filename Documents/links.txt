@@ -6,8 +6,11 @@ https://docs.google.com/document/d/1IUbu_L-N6miMLQ49VPpBAYf3xb_zTnEoCUKHgRY-3bc/
 
 https://github.com/jeffzlweng/DII-Challenge
 
-TODO:
+Project Grading Rubic:
+https://docs.google.com/document/d/1Ht1MUwX-Ff2T5Dn-ngyb0gyrG7StZIlOeTrPNZYhv0M/edit
 
+TODO:
+-----------------------------------------------------------------------
 I: Report
 1. Scope of reproducibility : 2 use_cases. need more info....
 
